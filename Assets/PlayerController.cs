@@ -6,26 +6,25 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody2D _playerMove;
     Vector2 _playerPower;
-    int _moveSpeed = 1;
+    public float _moveSpeed = 5f;
     float _horizontal;
     // Start is called before the first frame update
     void Start()
     {
         _playerMove = GetComponent<Rigidbody2D>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        _horizontal = Input.GetAxis("Horizontal");
-        _playerMove.AddForce(_playerPower * _moveSpeed, ForceMode2D.Force);
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
-            _playerPower = Vector2.left;
+            _playerMove.velocity = new Vector2(-_moveSpeed, 0);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
-            _playerPower = Vector2.right;
+            _playerMove.velocity = new Vector2(_moveSpeed,0);
         }
         if (_horizontal < 0)
         {
