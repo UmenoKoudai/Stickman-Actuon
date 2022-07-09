@@ -4,62 +4,72 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody2D _playerMove;
-    Vector2 _playerPower;
-    public float _moveSpeed = 5f;
-    float _horizontal;
-    float _time;
-    // Start is called before the first frame update
+    [SerializeField] float _intarval;
+    [SerializeField] float _defaltSpeed;
+    [SerializeField] float _dushSpeed;
+    [SerializeField] float _speed;
+    [SerializeField] float _jumpPower;
+    bool _dubleClick = false;
+    float _timer;
+    float _x;
+    float _y;
+    Rigidbody2D _rb;
+
     void Start()
     {
-        _playerMove = GetComponent<Rigidbody2D>();
-        
+        _rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        float x = Input.GetAxis("Horizontal");
-        //float y = Input.GetAxis("Vertical");
-
-        //_playerMove.velocity = new Vector2(x + _moveSpeed, y + _moveSpeed);
-        FlipX(x);
-        if (Input.GetKey(KeyCode.A))
+        _x = Input.GetAxisRaw("Horizontal");
+        _rb.velocity = new Vector2(_x * _speed, _y * _speed);
+        FlipX(_x);
+        if (Input.GetButtonDown("Horizontal"))
         {
-            _playerMove.velocity = new Vector2(-_moveSpeed, 0);
-            //StartCoroutine(Click());
+            if (_dubleClick)
+            {
+                StartCoroutine(Dush());
+                _dubleClick = false;
+                _timer = 0;
+            }
+            else
+            {
+                _dubleClick = true;
+            }
         }
-        else if (Input.GetKey(KeyCode.D))
+        if (_dubleClick)
         {
-            _playerMove.velocity = new Vector2(_moveSpeed, 0);
-            //StartCoroutine(Click());
+            _timer += Time.deltaTime;
+            if (_timer > _intarval)
+            {
+                _dubleClick = false;
+                _timer = 0;
+            }
         }
-        if (_horizontal < 0)
+        if (Input.GetButtonDown("Vertical"))
         {
-            _playerMove.velocity = Vector2.zero;
+            _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
         }
         void FlipX(float horizontal)
         {
-            if(horizontal > 0)
+            if (horizontal > 0)
             {
                 transform.localScale = new Vector2(1, transform.localScale.y);
             }
-            else if(horizontal < 0)
+            else if (horizontal < 0)
             {
                 transform.localScale = new Vector2(-1, transform.localScale.y);
             }
         }
     }
 
-    //IEnumerator Click()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.A))
-    //    {
-    //        _playerMove.velocity = new Vector2(-_moveSpeed * 10, 0);
-    //    }
-    //    else if (Input.GetKeyDown(KeyCode.D))
-    //    {
-    //        _playerMove.velocity = new Vector2(_moveSpeed * 10, 0);
-    //    }
-    //    yield return new WaitForSecondsRealtime(0.5f);
+    IEnumerator Dush()
+    {
+        Debug.Log("ダッシュ開始");
+        _speed = _dushSpeed;
+        yield return new WaitForSeconds(0.5f);
+        _speed = _defaltSpeed;
+        Debug.Log("ダッシュ終了");
     }
+}
