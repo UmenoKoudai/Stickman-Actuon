@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] float _intarval;
+    /// <summary>通常の移動スピード</summary>
     [SerializeField] float _defaltSpeed;
+    /// <summary>ダッシュ時の移動スピード</summary>
     [SerializeField] float _dushSpeed;
-    [SerializeField] float _speed;
     [SerializeField] float _jumpPower;
-    bool _dubleClick = false;
-    float _timer;
-    float _x;
-    float _y;
+    [SerializeField] float _speed;
+    bool _isGround = true;
     Rigidbody2D _rb;
+    float _x;
 
     void Start()
     {
@@ -23,33 +22,16 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         _x = Input.GetAxisRaw("Horizontal");
-        _rb.velocity = new Vector2(_x * _speed, _y * _speed);
+        _rb.velocity = new Vector2(_x * _speed, 0);
+        //プレイヤーの向きを変える
         FlipX(_x);
-        if (Input.GetButtonDown("Horizontal"))
+        if (Input.GetButtonDown("Fire3"))
         {
-            if (_dubleClick)
-            {
-                StartCoroutine(Dush());
-                _dubleClick = false;
-                _timer = 0;
-            }
-            else
-            {
-                _dubleClick = true;
-            }
+            StartCoroutine(Dush());
         }
-        if (_dubleClick)
+        if (Input.GetButtonDown("Jump") && _isGround)
         {
-            _timer += Time.deltaTime;
-            if (_timer > _intarval)
-            {
-                _dubleClick = false;
-                _timer = 0;
-            }
-        }
-        if (Input.GetButtonDown("Vertical"))
-        {
-            _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+            _rb.velocity = new Vector2(0, _jumpPower);
         }
         void FlipX(float horizontal)
         {
@@ -62,14 +44,24 @@ public class PlayerController : MonoBehaviour
                 transform.localScale = new Vector2(-1, transform.localScale.y);
             }
         }
+        //0.5秒間ダッシュする
+        IEnumerator Dush()
+        {
+            Debug.Log("ダッシュ開始");
+            _speed = _dushSpeed;
+            yield return new WaitForSeconds(0.5f);
+            Debug.Log("ダッシュ終了");
+            _speed = _defaltSpeed;
+        }
     }
 
-    IEnumerator Dush()
+    //接地判定
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("ダッシュ開始");
-        _speed = _dushSpeed;
-        yield return new WaitForSeconds(0.5f);
-        _speed = _defaltSpeed;
-        Debug.Log("ダッシュ終了");
+        _isGround = true;
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        _isGround = false;
     }
 }
