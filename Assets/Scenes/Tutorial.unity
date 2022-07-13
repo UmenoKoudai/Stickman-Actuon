@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 40444687}
   m_Layer: 0
   m_Name: Ground 1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -563,6 +563,10 @@ MonoBehaviour:
   _dushSpeed: 25
   _jumpPower: 100
   _speed: 10
+  _lineForWall: {x: 1, y: 1}
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!61 &378387267
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -600,9 +604,9 @@ GameObject:
   - component: {fileID: 392980174}
   - component: {fileID: 392980176}
   - component: {fileID: 392980175}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall 2
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -919,7 +923,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.8600001, y: 0.51, z: -10}
+  m_LocalPosition: {x: -2.3000002, y: 0.51, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1085,7 +1089,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 807794546}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.8600001, y: 0.51, z: -10}
+  m_LocalPosition: {x: -2.3000002, y: 0.51, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1864061052}
@@ -1204,7 +1208,7 @@ GameObject:
   - component: {fileID: 921615197}
   m_Layer: 0
   m_Name: Ground 2
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1739,9 +1743,9 @@ GameObject:
   - component: {fileID: 1516690012}
   - component: {fileID: 1516690014}
   - component: {fileID: 1516690013}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall 1
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1997,7 +2001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 4.9, y: 3.42, z: 0}
+  m_TrackedObjectOffset: {x: 6.46, y: 3.42, z: 0}
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
