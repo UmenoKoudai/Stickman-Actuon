@@ -8,11 +8,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _defaltSpeed;
     /// <summary>ダッシュ時の移動スピード</summary>
     [SerializeField] float _dushSpeed;
+    /// <summary>通常ジャンプの力</summary>
     [SerializeField] float _jumpPower;
+    /// <summary>壁ジャンプの力</summary>
+    [SerializeField] float _wallJumpPower;
+    /// <summary>移動スピード</summary>
     [SerializeField] float _speed;
     [SerializeField] Vector2 _lineForWall = new Vector2(1f, 1f);
     [SerializeField] LayerMask _wallLayer = 0;
-    bool _wallJump = true;
+    [SerializeField] GameObject _effect;
+    bool _wallJump = false;
     bool _isGround = true;
     Rigidbody2D _rb;
     float _x;
@@ -38,19 +43,29 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && _isGround)
         {
             _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+            EffectPlay();
             //_rb.velocity = new Vector2(0, _jumpPower);
         }
         if(hit.collider && Input.GetButtonDown("Jump"))
         {
-            _rb.velocity = _lineForWall;
-            if(_wallJump)
+            Debug.Log("壁に当たった");
+            _lineForWall = Vector2.zero;
+            if (_wallJump)
             {
+                Debug.Log("右ジャンプ");
                 _lineForWall = new Vector2(1f, 1f);
+                _rb.AddForce(_lineForWall * _wallJumpPower, ForceMode2D.Impulse);
+                FlipX(1f);
+                EffectPlay();
                 _wallJump = false;
             }
             else
             {
+                Debug.Log("左ジャンプ");
                 _lineForWall = new Vector2(-1f, 1f);
+                _rb.AddForce(_lineForWall * _wallJumpPower, ForceMode2D.Impulse);
+                FlipX(-1f);
+                EffectPlay();
                 _wallJump = true;
             }
         }
@@ -60,6 +75,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("ダッシュ開始");
             _speed = _dushSpeed;
+            EffectPlay();
             yield return new WaitForSeconds(0.5f);
             Debug.Log("ダッシュ終了");
             _speed = _defaltSpeed;
@@ -77,6 +93,11 @@ public class PlayerController : MonoBehaviour
         {
             transform.localScale = new Vector2(-1, transform.localScale.y);
         }
+    }
+
+    void EffectPlay()
+    {
+        Instantiate(_effect, transform.position, transform.rotation);
     }
 
     //接地判定
