@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
     bool _isGround = true;
     Rigidbody2D _rb;
     float _x;
+    float _timer;
+    int _intarval = 5;
 
     void Start()
     {
@@ -29,23 +31,28 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        _timer += Time.deltaTime;
         _x = Input.GetAxisRaw("Horizontal");
         _rb.velocity = new Vector2(_x * _speed, 0);
         Vector2 start = this.transform.position;
         Debug.DrawLine(start, start + _lineForWall);
         RaycastHit2D hit = Physics2D.Linecast(start, start + _lineForWall, _wallLayer);
-
         FlipX(_x);
+        if(_timer >= _intarval)
+        {
+            _lineForWall = new Vector2(1f, 2f);
+        }
         if (Input.GetButtonDown("Fire3"))
         {
             StartCoroutine(Dush());
         }
-        if (Input.GetButtonDown("Jump") && _isGround)
+        if (Input.GetButtonDown("Jump") && _isGround && !hit.collider)
         {
             _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
             EffectPlay();
             //_rb.velocity = new Vector2(0, _jumpPower);
         }
+
         if(hit.collider && Input.GetButtonDown("Jump"))
         {
             Debug.Log("壁に当たった");
@@ -53,7 +60,7 @@ public class PlayerController : MonoBehaviour
             if (_wallJump)
             {
                 Debug.Log("右ジャンプ");
-                _lineForWall = new Vector2(1f, 1f);
+                _lineForWall = new Vector2(1f, 2f);
                 _rb.AddForce(_lineForWall * _wallJumpPower, ForceMode2D.Impulse);
                 FlipX(1f);
                 EffectPlay();
@@ -62,7 +69,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 Debug.Log("左ジャンプ");
-                _lineForWall = new Vector2(-1f, 1f);
+                _lineForWall = new Vector2(-1f, 2f);
                 _rb.AddForce(_lineForWall * _wallJumpPower, ForceMode2D.Impulse);
                 FlipX(-1f);
                 EffectPlay();
