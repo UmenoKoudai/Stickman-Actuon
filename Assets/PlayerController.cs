@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _wallJumpPower;
     /// <summary>移動スピード</summary>
     [SerializeField] float _speed;
-    [SerializeField] Vector2 _lineForWall = new Vector2(1f, 1f);
+    [SerializeField] Vector2 _lineForWall = Vector2.right;
     [SerializeField] LayerMask _wallLayer = 0;
     [SerializeField] GameObject _effect;
     bool _wallJump = false;
@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D _rb;
     float _x;
     float _timer;
-    int _intarval = 5;
+    int _intarval = 3;
 
     void Start()
     {
@@ -40,7 +40,9 @@ public class PlayerController : MonoBehaviour
         FlipX(_x);
         if(_timer >= _intarval)
         {
-            _lineForWall = new Vector2(1f, 2f);
+            _lineForWall = Vector2.right;
+            //_rb.isKinematic = false;
+            _timer = 0f;
         }
         if (Input.GetButtonDown("Fire3"))
         {
@@ -49,30 +51,29 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && _isGround && !hit.collider)
         {
             _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
-            EffectPlay();
             //_rb.velocity = new Vector2(0, _jumpPower);
         }
 
         if(hit.collider && Input.GetButtonDown("Jump"))
         {
             Debug.Log("壁に当たった");
-            _lineForWall = Vector2.zero;
+            //_lineForWall = Vector2.zero;
             if (_wallJump)
             {
+                //_rb.isKinematic = true;
                 Debug.Log("右ジャンプ");
-                _lineForWall = new Vector2(1f, 2f);
-                _rb.AddForce(_lineForWall * _wallJumpPower, ForceMode2D.Impulse);
+                _lineForWall = Vector2.left;
+                _rb.AddForce(new Vector2(-1f, 2f).normalized * _wallJumpPower, ForceMode2D.Impulse);
                 FlipX(1f);
-                EffectPlay();
                 _wallJump = false;
             }
             else
             {
+                //_rb.isKinematic = true;
                 Debug.Log("左ジャンプ");
-                _lineForWall = new Vector2(-1f, 2f);
-                _rb.AddForce(_lineForWall * _wallJumpPower, ForceMode2D.Impulse);
+                _lineForWall = Vector2.right;
+                _rb.AddForce(new Vector2(1f, 2f).normalized * _wallJumpPower, ForceMode2D.Impulse);
                 FlipX(-1f);
-                EffectPlay();
                 _wallJump = true;
             }
         }
@@ -82,7 +83,6 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("ダッシュ開始");
             _speed = _dushSpeed;
-            EffectPlay();
             yield return new WaitForSeconds(0.5f);
             Debug.Log("ダッシュ終了");
             _speed = _defaltSpeed;

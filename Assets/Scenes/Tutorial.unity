@@ -583,8 +583,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaltSpeed: 10
   _dushSpeed: 25
-  _jumpPower: 100
-  _wallJumpPower: 50
+  _jumpPower: 150
+  _wallJumpPower: 100
   _speed: 10
   _lineForWall: {x: 1, y: 1}
   _wallLayer:
