@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _wallJumpPower;
     /// <summary>移動スピード</summary>
     [SerializeField] float _speed;
-    [SerializeField] Vector2 _lineForWall = new Vector2(1f, 1f);
+    [SerializeField] Vector2 _lineForWall = new Vector2(1f, 2f);
     [SerializeField] LayerMask _wallLayer = 0;
     [SerializeField] GameObject _effect;
     bool _wallJump = false;
@@ -36,15 +36,15 @@ public class PlayerController : MonoBehaviour
         Debug.DrawLine(start, start + _lineForWall);
         RaycastHit2D hit = Physics2D.Linecast(start, start + _lineForWall, _wallLayer);
         FlipX(x);
-        if(x <= 0 || x > 0 && _isGround)
+        if(x < 0 || x > 0 && _isGround)
         {
-            _rb.velocity = new Vector2(x * _speed, transform.position.y);
+            _rb.velocity = new Vector2(x , 0f).normalized * _speed;
         }
-        if(_timer >= _intarval)
-        {
-            _lineForWall = new Vector2(1f, 1f);
-            _timer = 0f;
-        }
+        //if(_timer >= _intarval)
+        //{
+        //    _lineForWall = new Vector2(1f, 2f);
+        //    _timer = 0f;
+        //}
         if (Input.GetButtonDown("Fire3"))
         {
             StartCoroutine(Dush());
@@ -55,17 +55,17 @@ public class PlayerController : MonoBehaviour
             Debug.Log("壁に当たった");
             if (_wallJump)
             {
+                _rb.velocity = new Vector2(1f, 2f).normalized * _wallJumpPower;
                 Debug.Log("右ジャンプ");
-                _lineForWall = new Vector2(1f, 1f);
-                _rb.velocity = new Vector2(1f, 1f).normalized * _wallJumpPower;
+                _lineForWall = new Vector2(1f, 2f);
                 FlipX(1f);
                 _wallJump = false;
             }
             else
             {
+                _rb.velocity = new Vector2(-1f, 2f).normalized * _wallJumpPower;
                 Debug.Log("左ジャンプ");
-                _lineForWall = new Vector2(-1f, 1f);
-                _rb.velocity = new Vector2(-1f, 1f).normalized * _wallJumpPower;
+                _lineForWall = new Vector2(-1f, 2f);
                 FlipX(-1f);
                 _wallJump = true;
             }
