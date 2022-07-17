@@ -32,13 +32,15 @@ public class PlayerController : MonoBehaviour
     {
         _timer += Time.deltaTime;
         float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxis("Vertical");
         Vector2 start = this.transform.position;
         Debug.DrawLine(start, start + _lineForWall);
         RaycastHit2D hit = Physics2D.Linecast(start, start + _lineForWall, _wallLayer);
+        _rb.drag = 0;
         FlipX(x);
-        if(x < 0 || x > 0 && _isGround)
+        if( _isGround)
         {
-            _rb.velocity = new Vector2(x , 0f).normalized * _speed;
+            PlayerMove(x, y);
         }
         //if(_timer >= _intarval)
         //{
@@ -50,24 +52,28 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Dush());
         }
 
-        if(hit.collider && Input.GetButtonDown("Jump"))
+        if(hit.collider)
         {
+            _rb.drag = 10;
             Debug.Log("壁に当たった");
-            if (_wallJump)
+            if(Input.GetButtonDown("Jump"))
             {
-                _rb.velocity = new Vector2(1f, 2f).normalized * _wallJumpPower;
-                Debug.Log("右ジャンプ");
-                _lineForWall = new Vector2(1f, 2f);
-                FlipX(1f);
-                _wallJump = false;
-            }
-            else
-            {
-                _rb.velocity = new Vector2(-1f, 2f).normalized * _wallJumpPower;
-                Debug.Log("左ジャンプ");
-                _lineForWall = new Vector2(-1f, 2f);
-                FlipX(-1f);
-                _wallJump = true;
+                if (_wallJump)
+                {
+                    _rb.velocity = new Vector2(1f, 2f).normalized * _wallJumpPower;
+                    Debug.Log("右ジャンプ");
+                    _lineForWall = new Vector2(1f, 2f);
+                    FlipX(1f);
+                    _wallJump = false;
+                }
+                else
+                {
+                    _rb.velocity = new Vector2(-1f, 2f).normalized * _wallJumpPower;
+                    Debug.Log("左ジャンプ");
+                    _lineForWall = new Vector2(-1f, 2f);
+                    FlipX(-1f);
+                    _wallJump = true;
+                }
             }
         }
         
@@ -80,6 +86,12 @@ public class PlayerController : MonoBehaviour
             Debug.Log("ダッシュ終了");
             _speed = _defaltSpeed;
         }
+    }
+
+    void PlayerMove(float X, float Y)
+    {
+        _rb.velocity = new Vector2(X, Y).normalized * _speed;
+        //_rb.velocity = new Vector2(0f, Y).normalized * _speed;
     }
 
     //プレイヤーの向きを変える
