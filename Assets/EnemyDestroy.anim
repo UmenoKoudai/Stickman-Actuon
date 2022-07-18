@@ -358,7 +358,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 1.35
-    functionName: Destoroy
+    functionName: EnemyDestoroy
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
