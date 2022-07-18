@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 _lineForWall = new Vector2(1f, 2f);
     [SerializeField] LayerMask _wallLayer = 0;
     [SerializeField] GameObject _effect;
+    SpriteRenderer _spriteRenderer;
+    //Color _color;
     bool _wallJump = false;
     bool _isGround = true;
     Rigidbody2D _rb;
@@ -26,6 +28,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -58,6 +61,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("壁に当たった");
             if(Input.GetButtonDown("Jump"))
             {
+                EffectPlay();
                 if (_wallJump)
                 {
                     _rb.velocity = new Vector2(1f, 2f).normalized * _wallJumpPower;
@@ -82,6 +86,8 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("ダッシュ開始");
             _speed = _dushSpeed;
+            EffectPlay();
+            //_spriteRenderer.color.a = 0;
             yield return new WaitForSeconds(0.5f);
             Debug.Log("ダッシュ終了");
             _speed = _defaltSpeed;
