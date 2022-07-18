@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 _lineForWall = new Vector2(1f, 2f);
     [SerializeField] LayerMask _wallLayer = 0;
     [SerializeField] GameObject _effect;
+    [SerializeField] BoxCollider2D _boxCollider;
     SpriteRenderer _spriteRenderer;
     //Color _color;
     bool _wallJump = false;
@@ -45,11 +46,7 @@ public class PlayerController : MonoBehaviour
         {
             PlayerMove(x, y);
         }
-        //if(_timer >= _intarval)
-        //{
-        //    _lineForWall = new Vector2(1f, 2f);
-        //    _timer = 0f;
-        //}
+
         if (Input.GetButtonDown("Fire3"))
         {
             StartCoroutine(Dush());
@@ -94,6 +91,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //プレイヤーの基本動作
     void PlayerMove(float X, float Y)
     {
         _rb.velocity = new Vector2(X, Y).normalized * _speed;
