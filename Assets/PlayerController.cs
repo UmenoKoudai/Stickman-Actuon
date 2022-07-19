@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _speed;
     [SerializeField] Vector2 _lineForWall = new Vector2(1f, 2f);
     [SerializeField] LayerMask _wallLayer = 0;
-    [SerializeField] GameObject _effect;
+    [SerializeField] ParticleSystem _effect;
     [SerializeField] BoxCollider2D _boxCollider;
     SpriteRenderer _spriteRenderer;
     //Color _color;
@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        
     }
 
     void Update()
@@ -45,6 +46,11 @@ public class PlayerController : MonoBehaviour
         if( _isGround)
         {
             PlayerMove(x, y);
+            if(_timer >= _intarval)
+            {
+                _lineForWall = new Vector2(1f, 2f);
+                _timer = 0;
+            }
         }
 
         if (Input.GetButtonDown("Fire3"))
@@ -113,7 +119,8 @@ public class PlayerController : MonoBehaviour
 
     void EffectPlay()
     {
-        Instantiate(_effect, transform.position, transform.rotation);
+        var Effect = _effect.GetComponent<ParticleSystem>();
+        Effect.Play();
     }
 
     //ê⁄ínîªíË
