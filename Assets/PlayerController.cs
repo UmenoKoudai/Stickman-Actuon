@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     {
         _timer += Time.deltaTime;
         float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxis("Vertical");
+        //float y = Input.GetAxis("Vertical");
         Vector2 start = this.transform.position;
         Debug.DrawLine(start, start + _lineForWall);
         RaycastHit2D hit = Physics2D.Linecast(start, start + _lineForWall, _wallLayer);
@@ -48,10 +48,11 @@ public class PlayerController : MonoBehaviour
         //RaycastHit2D hitRigth = Physics2D.Linecast(start, start + _lineForRigth, _wallLayer);
         //RaycastHit2D hitLeft = Physics2D.Linecast(start, start + _lineForLeft, _wallLayer);
         _rb.drag = 0;
+        
         FlipX(x);
         if( _isGround)
         {
-            PlayerMove(x, y);
+            PlayerMove(x);
             if (_timer >= _intarval)
             {
                 _lineForRigth = new Vector2(1f, 2f);
@@ -117,9 +118,13 @@ public class PlayerController : MonoBehaviour
     }
 
     //プレイヤーの基本動作
-    void PlayerMove(float X, float Y)
+    void PlayerMove(float X)
     {
-        _rb.velocity = new Vector2(X, Y).normalized * _speed;
+        _rb.velocity = new Vector2(X, 0f).normalized * _speed;
+        if(Input.GetButtonDown("Jump"))
+        {
+            _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+        }
         //_rb.velocity = new Vector2(0f, Y).normalized * _speed;
     }
 
