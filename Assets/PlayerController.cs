@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("壁に当たった");
             if (Input.GetButtonDown("Jump"))
             {
+                _wallJump = !_wallJump;
                 EffectPlay();
                 if (_wallJump)
                 {
@@ -91,7 +92,6 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("右ジャンプ");
                     _lineForWall = new Vector2(1f, 2f);
                     FlipX(1f);
-                    _wallJump = false;
                 }
                 else
                 {
@@ -99,7 +99,6 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("左ジャンプ");
                     _lineForWall = new Vector2(-1f, 2f);
                     FlipX(-1f);
-                    _wallJump = true;
                 }
             }
         }
