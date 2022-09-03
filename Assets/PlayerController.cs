@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     /// <summary>移動スピード</summary>
     [SerializeField] float _speed;
     [SerializeField] Vector2 _lineForWall = new Vector2(1f, 2f);
+    [SerializeField] Vector2 _lineForRigth = Vector2.right;
+    [SerializeField] Vector2 _lineForLeft = Vector2.left;
     [SerializeField] LayerMask _wallLayer = 0;
     [SerializeField] ParticleSystem _effect;
     [SerializeField] BoxCollider2D _boxCollider;
@@ -37,18 +39,23 @@ public class PlayerController : MonoBehaviour
     {
         _timer += Time.deltaTime;
         float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxis("Vertical");
+        //float y = Input.GetAxis("Vertical");
         Vector2 start = this.transform.position;
         Debug.DrawLine(start, start + _lineForWall);
         RaycastHit2D hit = Physics2D.Linecast(start, start + _lineForWall, _wallLayer);
+        //Debug.DrawLine(start, start + _lineForRigth);
+        //Debug.DrawLine(start, start + _lineForLeft);
+        //RaycastHit2D hitRigth = Physics2D.Linecast(start, start + _lineForRigth, _wallLayer);
+        //RaycastHit2D hitLeft = Physics2D.Linecast(start, start + _lineForLeft, _wallLayer);
         _rb.drag = 0;
+        
         FlipX(x);
         if( _isGround)
         {
-            PlayerMove(x, y);
-            if(_timer >= _intarval)
+            PlayerMove(x);
+            if (_timer >= _intarval)
             {
-                _lineForWall = new Vector2(1f, 2f);
+                _lineForRigth = new Vector2(1f, 2f);
                 _timer = 0;
             }
         }
@@ -57,13 +64,27 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(Dush());
         }
-
-        if(hit.collider)
+        //壁の位置(point)を取得して角度を求める、その角度の方向にジャンプする(実装中)
+        //if (hitRigth.collider || hitLeft.collider)
+        //{
+        //    _rb.drag = 10;
+        //    Debug.Log("壁に当たった");
+        //    var hitPosition = hitLeft.point;
+        //    var playerUP = transform.up;
+        //    if (Input.GetButtonDown("Jump"))
+        //    {
+        //        var jumpAngle = Mathf.Atan2(playerUP.y, hitPosition.x);
+        //        Vector2 jumpVector = new Vector2(1 * Mathf.Cos(jumpAngle), 1 * Mathf.Sin(jumpAngle));
+        //        _rb.velocity = jumpVector.normalized * _wallJumpPower;
+        //    }
+        //}
+        if (hit.collider)
         {
             _rb.drag = 10;
             Debug.Log("壁に当たった");
-            if(Input.GetButtonDown("Jump"))
+            if (Input.GetButtonDown("Jump"))
             {
+                _wallJump = !_wallJump;
                 EffectPlay();
                 if (_wallJump)
                 {
@@ -71,7 +92,6 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("右ジャンプ");
                     _lineForWall = new Vector2(1f, 2f);
                     FlipX(1f);
-                    _wallJump = false;
                 }
                 else
                 {
@@ -79,11 +99,10 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("左ジャンプ");
                     _lineForWall = new Vector2(-1f, 2f);
                     FlipX(-1f);
-                    _wallJump = true;
                 }
             }
         }
-        
+
         //0.5秒間ダッシュする
         IEnumerator Dush()
         {
@@ -98,9 +117,13 @@ public class PlayerController : MonoBehaviour
     }
 
     //プレイヤーの基本動作
-    void PlayerMove(float X, float Y)
+    void PlayerMove(float X)
     {
-        _rb.velocity = new Vector2(X, Y).normalized * _speed;
+        _rb.velocity = new Vector2(X, 0f).normalized * _speed;
+        if(Input.GetButtonDown("Jump"))
+        {
+            _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+        }
         //_rb.velocity = new Vector2(0f, Y).normalized * _speed;
     }
 
